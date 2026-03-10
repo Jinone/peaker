@@ -29,6 +29,7 @@ require (
 	github.com/mitchellh/go-vnc v0.0.0-20150629162542-723ed9867aed
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/projectdiscovery/ratelimit v0.0.82
+	github.com/sijms/go-ora/v2 v2.9.0
 	github.com/spf13/cast v1.10.0
 	github.com/streadway/amqp v1.1.0
 	github.com/twmb/murmur3 v1.1.8
@@ -66,13 +67,11 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/k0kubun/pp/v3 v3.5.0 // indirect
 	github.com/kataras/golog v0.1.7 // indirect
 	github.com/kataras/pio v0.0.13 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/malfunkt/iprange v0.9.0 // indirect
-	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.27 // indirect
 	github.com/miekg/dns v1.1.62 // indirect
@@ -87,7 +86,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
-	github.com/sijms/go-ora/v2 v2.9.0 // indirect
 	github.com/thoas/go-funk v0.9.2 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect

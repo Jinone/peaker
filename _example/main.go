@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"os"
+	"time"
+
 	"github.com/iami317/logx"
 	"github.com/iami317/peaker"
 	"github.com/iami317/peaker/plugins"
 	"github.com/urfave/cli/v2"
-	"os"
-	"time"
 )
 
 func main() {
@@ -25,16 +29,6 @@ func RunApp() {
 			Name:    "ip_list",
 			Aliases: []string{"i"},
 			Value:   "./iplist.txt",
-		},
-		&cli.StringFlag{
-			Name:    "user_dict",
-			Aliases: []string{"u"},
-			Value:   "./user.dic",
-		},
-		&cli.StringFlag{
-			Name:    "pass_dict",
-			Aliases: []string{"p"},
-			Value:   "./pass.dic",
 		},
 		&cli.BoolFlag{
 			Name:  "verbose",
@@ -74,6 +68,11 @@ func RunApp() {
 			Name:  "protocol",
 			Usage: "view supported protocols",
 		},
+		&cli.StringFlag{
+			Name:    "output",
+			Aliases: []string{"o"},
+			Usage:   "output file path for JSON results (one per line)",
+		},
 	}
 	app.Action = RunServer
 	err := app.Run(os.Args)
@@ -112,25 +111,54 @@ func RunServer(ctx *cli.Context) error {
 	w := peaker.NewWeak(config)
 	w.StartTime = time.Now()
 
-	userDict, err := w.ReadUserDict(ctx.String("user_dict"))
-	if err != nil {
-		return err
+	// 内置用户名和密码字典
+	userDict := []string{
+		"root",
+		"admin",
+		"user",
 	}
-	passDict, err := w.ReadPasswordDict(ctx.String("pass_dict"))
-	if err != nil {
-		return err
+	passDict := []string{
+		"123456",
+		"admin",
+		"password",
+		"root",
+		"",
 	}
 	ipList, err := w.ReadIpList(ctx.String("ip_list"))
 	if err != nil {
 		return err
 	}
+
+	var (
+		writer *bufio.Writer
+		file   *os.File
+	)
+	if out := ctx.String("output"); out != "" {
+		file, err = os.Create(out)
+		if err != nil {
+			return fmt.Errorf("create output file failed: %w", err)
+		}
+		defer file.Close()
+		writer = bufio.NewWriter(file)
+		defer writer.Flush()
+	}
+
 	resultChan := make(chan interface{}, 1)
 	w.RunTask(ipList, userDict, passDict, resultChan)
 	for v := range resultChan {
 		r := v.(*peaker.ResultOut)
 		if len(r.Crack) > 0 {
-			for _, crack := range r.Crack {
-				logx.Silent(r.Addr.String(), crack.String())
+			data, err := json.Marshal(r)
+			if err != nil {
+				logx.Errorf("marshal result error: %v", err)
+				continue
+			}
+			if writer != nil {
+				if _, err := writer.Write(append(data, '\n')); err != nil {
+					logx.Errorf("write result to file error: %v", err)
+				}
+			} else {
+				fmt.Println(string(data))
 			}
 		}
 	}
