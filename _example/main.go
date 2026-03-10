@@ -111,19 +111,9 @@ func RunServer(ctx *cli.Context) error {
 	w := peaker.NewWeak(config)
 	w.StartTime = time.Now()
 
-	// 内置用户名和密码字典
-	userDict := []string{
-		"root",
-		"admin",
-		"user",
-	}
-	passDict := []string{
-		"123456",
-		"admin",
-		"password",
-		"root",
-		"",
-	}
+	// 用户名和密码字典全部在 dict.go 中维护，这里直接使用
+	userDict := BaseUserDict
+	passDict := BasePassDict
 	ipList, err := w.ReadIpList(ctx.String("ip_list"))
 	if err != nil {
 		return err
