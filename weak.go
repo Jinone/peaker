@@ -142,7 +142,7 @@ func (w *Weak) RunIp(i interface{}) {
 		return
 	}
 
-	if net.ParseIP(input.Addr.Ip) == nil || input.Addr.Ip == "0.0.0.0" {
+	if input.Addr.Ip == "0.0.0.0" {
 		w.Config.Logger.Errorf("【%v】 not a valid IP address", input.Addr.Ip)
 		input.Done <- struct{}{}
 		return
